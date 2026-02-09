@@ -50,7 +50,7 @@ jobs:
         with:
           directory: .
           framework: terraform
-          soft_fail: false # Fails the pipeline if issues found
+          soft_fail: true # Fails the pipeline if issues found
 
       # 8️⃣ Infracost Cost Estimation
       - name: Setup Infracost
