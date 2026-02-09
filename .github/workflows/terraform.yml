@@ -17,6 +17,29 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+        # 1. TFLint
+      - uses: terraform-linters/setup-tflint@v4
+      - name: Run TFLint
+        run: |
+          tflint --init
+          tflint -f compact
+
+      # 2. Checkov (Security Scan)
+      - name: Run Checkov
+        uses: bridgecrewio/checkov-action@master
+        with:
+          directory: .
+          framework: terraform
+          soft_fail: false # Set to true if you don't want it to block the build
+
+      # 3. Infracost (Cost Estimate)
+      - name: Setup Infracost
+        uses: infracost/actions/setup@v3
+        with:
+          api-key: ${{ secrets.INFRACOST_API_KEY }}
+      - name: Generate Infracost estimate
+        run: infracost breakdown --path .
+
       # The "Secretless" Login
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v3
