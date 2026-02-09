@@ -5,34 +5,54 @@ on:
     branches: [ main ]
   pull_request:
 
-# CRITICAL: This allows GitHub to request the OIDC JWT token
 permissions:
-  id-token: write   
+  id-token: write   # Needed for OIDC login
   contents: read    
 
 jobs:
   terraform:
     runs-on: ubuntu-latest
     steps:
+      # 1️⃣ Checkout repository
       - name: Checkout Code
         uses: actions/checkout@v4
 
-        # 1. TFLint
+      # 2️⃣ Configure AWS Credentials (OIDC)
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::416957693135:role/docker-tutorial
+          aws-region: eu-west-3
+
+      # 3️⃣ Setup Terraform CLI
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      # 4️⃣ Terraform Init
+      - name: Terraform Init
+        run: terraform init
+
+      # 5️⃣ Select or create workspace BEFORE any plan or lint
+      - name: Select Terraform Workspace
+        run: |
+          terraform workspace select dev || terraform workspace new dev
+
+      # 6️⃣ TFLint (after workspace selection)
       - uses: terraform-linters/setup-tflint@v4
       - name: Run TFLint
         run: |
           tflint --init
           tflint -f compact
 
-      # 2. Checkov (Security Scan)
+      # 7️⃣ Checkov Security Scan
       - name: Run Checkov
         uses: bridgecrewio/checkov-action@master
         with:
           directory: .
           framework: terraform
-          soft_fail: false # Set to true if you don't want it to block the build
+          soft_fail: false # Fails the pipeline if issues found
 
-      # 3. Infracost (Cost Estimate)
+      # 8️⃣ Infracost Cost Estimation
       - name: Setup Infracost
         uses: infracost/actions/setup@v3
         with:
@@ -40,21 +60,6 @@ jobs:
       - name: Generate Infracost estimate
         run: infracost breakdown --path .
 
-      # The "Secretless" Login
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v3
-        with:
-          role-to-assume: arn:aws:iam::416957693135:role/docker-tutorial # PASTE YOUR ARN HERE
-          aws-region: eu-west-3
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-
-      - name: Terraform Init
-        run: terraform init
-      - name: Select Terraform workspace
-        run: |
-          terraform workspace select dev || terraform workspace new dev
-
+      # 9️⃣ Terraform Plan
       - name: Terraform Plan
         run: terraform plan
