@@ -63,3 +63,46 @@ module "compute" {
     
   
 }
+
+
+resource "aws_cloudwatch_dashboard" "main" {
+    dashboard_name = "${local.env.project_name}-dashboard"
+
+    dashboard_body = jsonencode({
+        widgets = [
+            {
+                type = "metric"
+                x = 0
+                y = 0
+                width = 12
+                height = 6
+                properties = {
+                    metrics = [
+                        [ "AWS/EC2", "CPUUtilization", "InstanceId", module.compute.instance_id ]
+                    ]
+                    period = 300
+                    stat = "Average"
+                    region = local.env.region
+                    title = "EC2 CPU Utilization"
+                }
+            },
+                {
+                type = "metric"
+                x = 12
+                y = 0
+                width = 12
+                height = 6
+                properties = {
+                    metrics = [
+                        [ "AWS/EC2", "StatusCheckFailed", "InstanceId", module.compute.instance_id ]
+                    ]
+                    period = 300
+                    stat = "Average"
+                    region = local.env.region
+                    title = "hardware/instance health"
+                    }
+                }
+        ]
+    })
+  
+}

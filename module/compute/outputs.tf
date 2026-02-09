@@ -13,5 +13,5 @@ output "ec2_sg_id" {
 # modules/compute/outputs.tf
 output "instance_id" {
   description = "ID of the created EC2 instance"
-  value       = aws_instance.ec2.id  # Use your actual resource name
+  value       = aws_instance.ec2.id
 }
