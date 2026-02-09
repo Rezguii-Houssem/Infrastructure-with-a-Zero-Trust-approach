@@ -29,6 +29,9 @@ jobs:
 
       - name: Terraform Init
         run: terraform init
+      - name: Select Terraform workspace
+        run: |
+          terraform workspace select dev || terraform workspace new dev
 
       - name: Terraform Plan
         run: terraform plan
