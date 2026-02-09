@@ -58,7 +58,7 @@ jobs:
         with:
           api-key: ${{ secrets.INFRACOST_API_KEY }}
       - name: Generate Infracost estimate
-        run: infracost breakdown --path .
+        run: infracost breakdown --path . --format json --out-file infracost.json
 
       # 9️⃣ Terraform Plan
       - name: Terraform Plan
