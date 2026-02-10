@@ -7,3 +7,4 @@ terraform.tfstate.backup
 # OS / Editor
 .vscode/
 *.code-workspace
+file.txt
