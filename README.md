@@ -1,4 +1,4 @@
-<![CDATA[<div align="center">
+<div align="center">
 
 # 🚀 The Alpha Project
 
@@ -144,7 +144,7 @@ terraform workspace select dev
 terraform destroy
 ```
 
-------
+---
 
 ## 👤 Author
 
@@ -157,4 +157,4 @@ terraform destroy
 *Zero-Trust · Private-by-Default · Infrastructure-as-Code*
 
 </div>
-]]>
+
