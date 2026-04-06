@@ -12,7 +12,7 @@
 A production-ready Terraform project that deploys a **fully private, secure EC2 environment** managed via AWS Systems Manager (SSM).  
 Demonstrates advanced IaC principles including **modular design**, **remote state locking**, and **multi-environment workspace management**.
 
----
+-------
 
 </div>
 
