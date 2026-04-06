@@ -144,7 +144,7 @@ terraform workspace select dev
 terraform destroy
 ```
 
----
+------
 
 ## 👤 Author
 
